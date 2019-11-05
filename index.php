@@ -56,15 +56,20 @@ function convertToEnglishNumber($numberInput){
 	return $change;
 }
 
-print_r(convertToBurmeseWords('123456789', 'speech'));
+print_r(convertToBurmeseWords('111115000'));
 
 function convertToBurmeseWords($num, $wordType="written"){
+	
 	
 	$words = array('', 'တစ္', 'ႏွစ္', 'သံုး', 'ေလး', 'ငါး', 'ေျခာက္', 'ခုႏွစ္', '႐ွစ္', 'ကိုး', 'တစ္ဆယ္');
 	$_words = array('တစ္', 'ႏွစ္', 'သံုး', 'ေလး', 'ငါး', 'ေျခာက္', 'ခုႏွစ္', '႐ွစ္', 'ကိုး', 'တစ္ဆယ္');
 	$wordsConcat = implode("|", $_words);
 	
 	if(!$num) return $num;
+	
+	if(strlen($num)==1){
+		return $_words[$num-1];
+	}
 	
 	// convert to english number first
     $num = convertToEnglishNumber($num);
@@ -108,11 +113,19 @@ function convertToBurmeseWords($num, $wordType="written"){
 	if($rgr[4] != 0){
 		if($words[$rgr[4][0]] && !$words[$rgr[4][1]]){
 			$upperLakh .= (($upperLakh != '') ? '' : 'သိန္း') . $words[$rgr[4][0]] . 'ဆယ္';
+			
 		}elseif($words[$rgr[4][0]] || $words[$rgr[4][1]]){
 			if($words[$rgr[4]]){
 				$upperLakh .= ($words[$rgr[4]] || $words[$rgr[4][0]] . 'ဆယ္' . $words[$rgr[4][1]]) . 'သိန္း';
 			}else{
-				$upperLakh .= ($words[$rgr[4][0]] . 'ဆယ္' . $words[$rgr[4][1]]) . 'သိန္း';
+				#var_dump($words[$rgr[4][1]]);
+				if(strlen($words[$rgr[4][0]]) <> 0){
+					$upperLakh .= ($words[$rgr[4][0]] . 'ဆယ္' . $words[$rgr[4][1]]) . 'သိန္း';	
+				}else{
+					$upperLakh .= ($words[$rgr[4][1]]) . 'သိန္း';
+				}
+				
+				
 			}
 		}
 	}
@@ -154,6 +167,8 @@ function convertToBurmeseWords($num, $wordType="written"){
 	}else{
 		$final = $upperLakh . $lowerLakh;
 	}
+	
+	
 	
 	if(strpos($final, "ရာ") === false){
 		//do nothing here
