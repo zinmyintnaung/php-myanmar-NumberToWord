@@ -56,10 +56,9 @@ function convertToEnglishNumber($numberInput){
 	return $change;
 }
 
-print_r(convertToBurmeseWords('111115000'));
+print_r(convertToBurmeseWords('11110', 'speech'));
 
 function convertToBurmeseWords($num, $wordType="written"){
-	
 	
 	$words = array('', 'တစ္', 'ႏွစ္', 'သံုး', 'ေလး', 'ငါး', 'ေျခာက္', 'ခုႏွစ္', '႐ွစ္', 'ကိုး', 'တစ္ဆယ္');
 	$_words = array('တစ္', 'ႏွစ္', 'သံုး', 'ေလး', 'ငါး', 'ေျခာက္', 'ခုႏွစ္', '႐ွစ္', 'ကိုး', 'တစ္ဆယ္');
@@ -150,9 +149,10 @@ function convertToBurmeseWords($num, $wordType="written"){
 	}
 	//lowerLakh += (n[8] != 0) ? (words[Number(n[8])] || words[n[8][0]] + 'ဆယ္' + words[n[8][1]]) : '';
 	
+	#return $words[$rgr[8][0]];
 	if($rgr[8] != 0){
 		if($words[$rgr[8]]){
-			$lowerLakh .= ($words[$rgr[8]] || $words[$rgr[8][0]] . 'ဆယ္' . $words[$rgr[8][1]]);
+			$lowerLakh .= $words[$rgr[8]];
 		}else{
 			$lowerLakh .= $words[$rgr[8][0]] . 'ဆယ္' . $words[$rgr[8][1]];
 		}
@@ -161,6 +161,7 @@ function convertToBurmeseWords($num, $wordType="written"){
 	}
 	
 	//var final = (upperLakh !== '' && lowerLakh !== '') ? upperLakh + ' ႏွင့္ ' + lowerLakh : upperLakh + lowerLakh;
+	
 	$final = '';
 	if($upperLakh !== '' && $lowerLakh !== ''){
 		$final = $upperLakh . ' ႏွင့္ ' . $lowerLakh;
@@ -168,32 +169,34 @@ function convertToBurmeseWords($num, $wordType="written"){
 		$final = $upperLakh . $lowerLakh;
 	}
 	
+	#return $final.' -> '.strlen($final).' -> '.strpos($final, "ေထာင္").' / ေထာင္';
 	
-	
-	if(strpos($final, "ရာ") === false){
+	if(!strpos($final, "ရာ") === false){
 		//do nothing here
-	}else{
 		if($wordType == 'speech'){
-			$final = str_replace("ရာ", "ရာ့ ", $final);
-		}else{
-			$final = str_replace("ရာ", "ရာ ", $final);
+			//Not all speech should emphasis, e.g. not required if last word
+			if(strlen($final) - strpos($final, "ရာ") != 6){
+				$final = str_replace("ရာ", "ရာ့ ", $final);
+			}
 		}
 	}
 	
-	if(strpos($final, "ေထာင္") === false){
-		//do nothing here
-	}else{
+	if(!strpos($final, "ေထာင္") === false){
 		if($wordType == 'speech'){
-			$final = str_replace("ေထာင္", "ေထာင့္ ", $final);
-		}else{
-			$final = str_replace("ေထာင္", "ေထာင္ ", $final);
+			//Not all speech should emphasis, e.g. not required if last word
+			if(strlen($final) - strpos($final, "ေထာင္") != 15){
+				$final = str_replace("ေထာင္", "ေထာင့္ ", $final);
+			}
 		}
 	}
 	
-	if(strpos($final, "ဆယ္") === false){
-		//do nothing here
-	}else{
-		$final = str_replace("ဆယ္", "ဆယ့္", $final);
+	if(!strpos($final, "ဆယ္") === false){
+		if($wordType == 'speech'){
+			//Not all speech should emphasis, e.g. not required if last word
+			if(strlen($final) - strpos($final, "ဆယ္") != 9){
+				$final = str_replace("ဆယ္", "ဆယ့္", $final);
+			}
+		}
 	}
 	
 	return $final;
