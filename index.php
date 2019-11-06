@@ -56,7 +56,7 @@ function convertToEnglishNumber($numberInput){
 	return $change;
 }
 
-print_r(convertToBurmeseWords('11110', 'speech'));
+print_r(convertToBurmeseWords('8101', 'speech'));
 
 function convertToBurmeseWords($num, $wordType="written"){
 	
@@ -149,13 +149,16 @@ function convertToBurmeseWords($num, $wordType="written"){
 	}
 	//lowerLakh += (n[8] != 0) ? (words[Number(n[8])] || words[n[8][0]] + 'ဆယ္' + words[n[8][1]]) : '';
 	
-	#return $words[$rgr[8][0]];
+	#return  $words[$rgr[8]];
 	if($rgr[8] != 0){
 		if($words[$rgr[8]]){
 			$lowerLakh .= $words[$rgr[8]];
-		}else{
+		}elseif($words[$rgr[8][0]]){
 			$lowerLakh .= $words[$rgr[8][0]] . 'ဆယ္' . $words[$rgr[8][1]];
+		}else{
+			$lowerLakh .= $words[$rgr[8][1]];
 		}
+		
 	}else{
 		$lowerLakh .='';
 	}
